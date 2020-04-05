@@ -9,7 +9,7 @@ var smart_move_active = false
 
 // Party Config
 var party = ['Dexla', 'Noirme', 'Magra', 'zobot', 'z0t0b', 'zotob', 'Draxious']
-callEveryFullHour(send_party_invites)
+callEveryTenMinutes(send_party_invites)
 
 // Potion Config
 var buy_pots = true
@@ -22,9 +22,6 @@ var quan_pots = 1000
 var xp = 0
 var min_monster_xp = 1800  // change to target weaker/stronger enemies
 var max_monster_atk = 120  // change to target weaker/stronger enemies
-var lastsupershot
-var lastmanaburst
-var lastblink
 
 // Bank Config
 var should_deposit = true
@@ -38,7 +35,7 @@ var estimated_exp_gained = 0
 
 // Coord Move Config
 var usesCoordMove = true  // false for normal attack
-var coord_index = 0		   // change starting coord_index
+var coord_index = 0	       // change starting coord_index
 var spot_accuracy = 4.0    // smaller the number = longer you stand in place
 var beach_box = [
 	[-1272, 1013], 
@@ -196,12 +193,12 @@ function on_party_request(name) {
 	}
 }
 
-function callEveryFullHour(my_function) {
+function callEveryTenMinutes(my_function) {
 	my_function()
 	
     return window.setTimeout( function() {
         my_function()
-        callEveryFullHour(my_function);
+        callEveryTenMinutes(my_function);
     }, 600000);
 }
 
@@ -369,8 +366,7 @@ function use_hunterMark(target) {
 }
 
 function use_supershot(target) {
-	if (!lastsupershot || new Date() - lastsupershot > 30000) { // 30 seconds
-    	lastsupershot = new Date();
+	if (!is_on_cooldown('supershot')) {
     	log(`Using Supershot on ${target.name}`)
 		use_skill('supershot', target)
   	}
@@ -378,16 +374,14 @@ function use_supershot(target) {
 
 // Mage Skills
 function use_manaburst(target) {
-	if (!lastmanaburst || new Date() - lastmanaburst > 6000) { // 6 seconds
-    	lastmanaburst = new Date();
+	if (!is_on_cooldown('burst')) {
     	log(`Using ManaBurst on ${target.name}`)
 		use_skill('burst', target)
   	}
 }
 
 function use_blink() {
-	if (!lastblink || new Date() - lastblink > 1200) { // 1.2 seconds
-    	lastblink = new Date();
+	if (!is_on_cooldown('blink')) {
     	log('Using Blink')
 		use_skill('blink')
   	}
