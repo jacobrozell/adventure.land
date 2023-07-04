@@ -174,13 +174,7 @@ function farm() {
 
     var target = get_target()
 
-    if (target == null) {
-        log('Moving to monster coord...')
-        con.smart_move_active = true
-        smart_move({ x: coord[0][0], y: coord[0][1] }, function () {
-            con.smart_move_active = false
-        });
-    } else {
+    if (target != null) {
         con.tempExpToGain = target.xp
 
         // Ranger Skills
@@ -314,7 +308,11 @@ function get_target() {
         change_target(target);
     } else {
         set_message("No Monsters nearby");
-        return;
+        log('Moving to monster coord...')
+        con.smart_move_active = true
+        smart_move({ x: coord[0][0], y: coord[0][1] }, function () {
+            con.smart_move_active = false
+        });
     }
 }
 
